@@ -946,3 +946,260 @@ int main() {
 ![演示图片](D:\文档\技术资源\读书笔记\ReadingNote\RE学习笔记\linux\X86_64\c\1.png)
 
 ---
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    int i = 0;
+
+    for (i = 0; i < 10; i++) {
+    
+    }
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  4004dd:   c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  4004e4:   eb 04                   jmp    4004ea <main+0x18>
+  4004e6:   83 45 fc 01             addl   $0x1,-0x4(%rbp)
+  4004ea:   83 7d fc 09             cmpl   $0x9,-0x4(%rbp)
+  4004ee:   7e f6                   jle    4004e6 <main+0x14>
+  4004f0:   b8 00 00 00 00          mov    $0x0,%eax
+  4004f5:   5d                      pop    %rbp
+  4004f6:   c3                      retq
+  4004f7:   66 0f 1f 84 00 00 00    nopw   0x0(%rax,%rax,1)
+  4004fe:   00 00
+```
+
+---
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    for (;;) {
+    
+    }
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   eb fe                   jmp    4004d6 <main+0x4>
+  4004d8:   0f 1f 84 00 00 00 00    nopl   0x0(%rax,%rax,1)
+  4004df:   00
+```
+
+---
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    int i = 0;
+
+    for (;;) {
+        i++; 
+    }
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  4004dd:   83 45 fc 01             addl   $0x1,-0x4(%rbp)
+  4004e1:   eb fa                   jmp    4004dd <main+0xb>
+  4004e3:   66 2e 0f 1f 84 00 00    nopw   %cs:0x0(%rax,%rax,1)
+  4004ea:   00 00 00
+  4004ed:   0f 1f 00                nopl   (%rax)
+```
+
+---
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    int i = 0;
+    int a = 0;
+
+    for (i = 0; i < 10; i++) {
+        a++; 
+    }
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  4004dd:   c7 45 f8 00 00 00 00    movl   $0x0,-0x8(%rbp)
+  4004e4:   c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  4004eb:   eb 08                   jmp    4004f5 <main+0x23>
+  4004ed:   83 45 f8 01             addl   $0x1,-0x8(%rbp)
+  4004f1:   83 45 fc 01             addl   $0x1,-0x4(%rbp)
+  4004f5:   83 7d fc 09             cmpl   $0x9,-0x4(%rbp)
+  4004f9:   7e f2                   jle    4004ed <main+0x1b>
+  4004fb:   b8 00 00 00 00          mov    $0x0,%eax
+  400500:   5d                      pop    %rbp
+  400501:   c3                      retq
+  400502:   66 2e 0f 1f 84 00 00    nopw   %cs:0x0(%rax,%rax,1)
+  400509:   00 00 00
+  40050c:   0f 1f 40 00             nopl   0x0(%rax)
+```
+
+---
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    while (1) {}
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   eb fe                   jmp    4004d6 <main+0x4>
+  4004d8:   0f 1f 84 00 00 00 00    nopl   0x0(%rax,%rax,1)
+  4004df:   00
+```
+
+---
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    int a = 0;
+
+    while (1) {
+        a = 1; 
+    }
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  4004dd:   c7 45 fc 01 00 00 00    movl   $0x1,-0x4(%rbp)
+  4004e4:   eb f7                   jmp    4004dd <main+0xb>
+  4004e6:   66 2e 0f 1f 84 00 00    nopw   %cs:0x0(%rax,%rax,1)
+  4004ed:   00 00 00
+```
+
+---
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    int num = 10;
+    int i = 0;
+    int a = 0;
+
+    while (i < num) {
+        a = i;
+        i++;
+    }
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c7 45 f8 0a 00 00 00    movl   $0xa,-0x8(%rbp)
+  4004dd:   c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  4004e4:   c7 45 f4 00 00 00 00    movl   $0x0,-0xc(%rbp)
+  4004eb:   eb 0a                   jmp    4004f7 <main+0x25>
+  4004ed:   8b 45 fc                mov    -0x4(%rbp),%eax
+  4004f0:   89 45 f4                mov    %eax,-0xc(%rbp)
+  4004f3:   83 45 fc 01             addl   $0x1,-0x4(%rbp)
+  4004f7:   8b 45 fc                mov    -0x4(%rbp),%eax
+  4004fa:   3b 45 f8                cmp    -0x8(%rbp),%eax
+  4004fd:   7c ee                   jl     4004ed <main+0x1b>
+  4004ff:   b8 00 00 00 00          mov    $0x0,%eax
+  400504:   5d                      pop    %rbp
+  400505:   c3                      retq
+  400506:   66 2e 0f 1f 84 00 00    nopw   %cs:0x0(%rax,%rax,1)
+  40050d:   00 00 00
+```
+
+---
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    int num = 10;
+    int i = 0;
+    int a = 0;
+
+    do {
+        a = i;
+        i++;
+    } while (i < num);
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c7 45 f8 0a 00 00 00    movl   $0xa,-0x8(%rbp)
+  4004dd:   c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  4004e4:   c7 45 f4 00 00 00 00    movl   $0x0,-0xc(%rbp)
+  4004eb:   8b 45 fc                mov    -0x4(%rbp),%eax
+  4004ee:   89 45 f4                mov    %eax,-0xc(%rbp)
+  4004f1:   83 45 fc 01             addl   $0x1,-0x4(%rbp)
+  4004f5:   8b 45 fc                mov    -0x4(%rbp),%eax
+  4004f8:   3b 45 f8                cmp    -0x8(%rbp),%eax
+  4004fb:   7c ee                   jl     4004eb <main+0x19>
+  4004fd:   b8 00 00 00 00          mov    $0x0,%eax
+  400502:   5d                      pop    %rbp
+  400503:   c3                      retq
+  400504:   66 2e 0f 1f 84 00 00    nopw   %cs:0x0(%rax,%rax,1)
+  40050b:   00 00 00
+  40050e:   66 90                   xchg   %ax,%ax
+```
+
+---
