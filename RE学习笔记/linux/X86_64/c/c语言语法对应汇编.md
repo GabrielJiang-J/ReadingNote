@@ -104,3 +104,414 @@ int main() {
 ```
 
 ---
+**c代码**
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    unsigned int a = 100;
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c7 45 fc 9c ff ff ff    movl   $0xffffff9c,-0x4(%rbp)
+  4004dd:   b8 00 00 00 00          mov    $0x0,%eax
+  4004e2:   5d                      pop    %rbp
+  4004e3:   c3                      retq   
+  4004e4:   66 2e 0f 1f 84 00 00    nopw   %cs:0x0(%rax,%rax,1)
+  4004eb:   00 00 00  
+  4004ee:   66 90                   xchg   %ax,%ax
+
+```
+
+---
+**c代码**
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    short int a = 100;
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   66 c7 45 fe 64 00       movw   $0x64,-0x2(%rbp)
+  4004dc:   b8 00 00 00 00          mov    $0x0,%eax
+  4004e1:   5d                      pop    %rbp
+  4004e2:   c3                      retq   
+  4004e3:   66 2e 0f 1f 84 00 00    nopw   %cs:0x0(%rax,%rax,1)
+  4004ea:   00 00 00  
+  4004ed:   0f 1f 00                nopl   (%rax)
+```
+
+---
+**c代码**
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    unsigned short int a = 100;
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   66 c7 45 fe 64 00       movw   $0x64,-0x2(%rbp)
+  4004dc:   b8 00 00 00 00          mov    $0x0,%eax
+  4004e1:   5d                      pop    %rbp
+  4004e2:   c3                      retq   
+  4004e3:   66 2e 0f 1f 84 00 00    nopw   %cs:0x0(%rax,%rax,1)
+  4004ea:   00 00 00  
+  4004ed:   0f 1f 00                nopl   (%rax)
+```
+
+---
+**c代码**
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    long a = 100;
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   48 c7 45 f8 64 00 00    movq   $0x64,-0x8(%rbp)
+  4004dd:   00  
+  4004de:   b8 00 00 00 00          mov    $0x0,%eax
+  4004e3:   5d                      pop    %rbp
+  4004e4:   c3                      retq   
+  4004e5:   66 2e 0f 1f 84 00 00    nopw   %cs:0x0(%rax,%rax,1)
+  4004ec:   00 00 00  
+  4004ef:   90                      nop 
+
+```
+
+---
+**c代码**
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    unsigned long a = 100;
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   48 c7 45 f8 64 00 00    movq   $0x64,-0x8(%rbp)
+  4004dd:   00  
+  4004de:   b8 00 00 00 00          mov    $0x0,%eax
+  4004e3:   5d                      pop    %rbp
+  4004e4:   c3                      retq   
+  4004e5:   66 2e 0f 1f 84 00 00    nopw   %cs:0x0(%rax,%rax,1)
+  4004ec:   00 00 00  
+  4004ef:   90                      nop 
+```
+
+---
+**c代码**
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    long a = -100;
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   48 c7 45 f8 9c ff ff    movq   $0xffffffffffffff9c,-0x8(%rbp)
+  4004dd:   ff  
+  4004de:   b8 00 00 00 00          mov    $0x0,%eax
+  4004e3:   5d                      pop    %rbp
+  4004e4:   c3                      retq   
+  4004e5:   66 2e 0f 1f 84 00 00    nopw   %cs:0x0(%rax,%rax,1)
+  4004ec:   00 00 00  
+  4004ef:   90 
+```
+
+---
+**c代码**
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    long long a = 100;
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   48 c7 45 f8 64 00 00    movq   $0x64,-0x8(%rbp)
+  4004dd:   00  
+  4004de:   b8 00 00 00 00          mov    $0x0,%eax
+  4004e3:   5d                      pop    %rbp
+  4004e4:   c3                      retq   
+  4004e5:   66 2e 0f 1f 84 00 00    nopw   %cs:0x0(%rax,%rax,1)
+  4004ec:   00 00 00  
+  4004ef:   90                      nop 
+```
+
+---
+**c代码**
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    unsigined long long a = 100;
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   48 c7 45 f8 64 00 00    movq   $0x64,-0x8(%rbp)
+  4004dd:   00  
+  4004de:   b8 00 00 00 00          mov    $0x0,%eax
+  4004e3:   5d                      pop    %rbp
+  4004e4:   c3                      retq   
+  4004e5:   66 2e 0f 1f 84 00 00    nopw   %cs:0x0(%rax,%rax,1)
+  4004ec:   00 00 00  
+  4004ef:   90                      nop 
+```
+
+---
+**c代码**
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    long long a = -100;
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   48 c7 45 f8 9c ff ff    movq   $0xffffffffffffff9c,-0x8(%rbp)
+  4004dd:   ff  
+  4004de:   b8 00 00 00 00          mov    $0x0,%eax
+  4004e3:   5d                      pop    %rbp
+  4004e4:   c3                      retq   
+  4004e5:   66 2e 0f 1f 84 00 00    nopw   %cs:0x0(%rax,%rax,1)
+  4004ec:   00 00 00  
+  4004ef:   90 
+```
+
+---
+**c代码**
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    char a = 100;
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c6 45 ff 64             movb   $0x64,-0x1(%rbp)
+  4004da:   b8 00 00 00 00          mov    $0x0,%eax
+  4004df:   5d                      pop    %rbp
+  4004e0:   c3                      retq   
+  4004e1:   66 2e 0f 1f 84 00 00    nopw   %cs:0x0(%rax,%rax,1)
+  4004e8:   00 00 00  
+  4004eb:   0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+```
+
+---
+**c代码**
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    unsigned char a = 100;
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c6 45 ff 64             movb   $0x64,-0x1(%rbp)
+  4004da:   b8 00 00 00 00          mov    $0x0,%eax
+  4004df:   5d                      pop    %rbp
+  4004e0:   c3                      retq   
+  4004e1:   66 2e 0f 1f 84 00 00    nopw   %cs:0x0(%rax,%rax,1)
+  4004e8:   00 00 00  
+  4004eb:   0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+```
+
+---
+**c代码**
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    char a = -100;
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c6 45 ff 9c             movb   $0x9c,-0x1(%rbp)
+  4004da:   b8 00 00 00 00          mov    $0x0,%eax
+  4004df:   5d                      pop    %rbp
+  4004e0:   c3                      retq   
+  4004e1:   66 2e 0f 1f 84 00 00    nopw   %cs:0x0(%rax,%rax,1)
+  4004e8:   00 00 00  
+  4004eb:   0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+```
+
+---
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    float a = 100.1;
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   f3 0f 10 05 96 00 00    movss  0x96(%rip),%xmm0        # 400574 <_IO_stdin_used+0x4>
+  4004dd:   00  
+  4004de:   f3 0f 11 45 fc          movss  %xmm0,-0x4(%rbp)
+  4004e3:   b8 00 00 00 00          mov    $0x0,%eax
+  4004e8:   5d                      pop    %rbp
+  4004e9:   c3                      retq   
+  4004ea:   66 0f 1f 44 00 00       nopw   0x0(%rax,%rax,1)
+```
+
+---
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    float a = -100.1;
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   f3 0f 10 05 96 00 00    movss  0x96(%rip),%xmm0        # 400574 <_IO_stdin_used+0x4>
+  4004dd:   00  
+  4004de:   f3 0f 11 45 fc          movss  %xmm0,-0x4(%rbp)
+  4004e3:   b8 00 00 00 00          mov    $0x0,%eax
+  4004e8:   5d                      pop    %rbp
+  4004e9:   c3                      retq   
+  4004ea:   66 0f 1f 44 00 00       nopw   0x0(%rax,%rax,1)
+```
+
+---
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    double a = 100.1;
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   f2 0f 10 05 9a 00 00    movsd  0x9a(%rip),%xmm0        # 400578 <_IO_stdin_used+0x8>
+  4004dd:   00  
+  4004de:   f2 0f 11 45 f8          movsd  %xmm0,-0x8(%rbp)
+  4004e3:   b8 00 00 00 00          mov    $0x0,%eax
+  4004e8:   5d                      pop    %rbp
+  4004e9:   c3                      retq   
+  4004ea:   66 0f 1f 44 00 00       nopw   0x0(%rax,%rax,1)
+```
+
+---
+
