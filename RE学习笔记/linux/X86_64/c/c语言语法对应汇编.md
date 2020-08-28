@@ -1495,3 +1495,385 @@ int main() {
 ```
 
 ---
+**64ŒªΩ˚÷π±‡“Î∆˜”≈ªØ±‡“Î÷∏¡Ó**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    int a = 0;
+    int b = 1;
+    int c = 2;
+
+    a = sizeof(b);
+
+    return 0;
+}
+```
+**∂‘”¶ª„±‡**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  4004dd:   c7 45 f8 01 00 00 00    movl   $0x1,-0x8(%rbp)
+  4004e4:   c7 45 f4 02 00 00 00    movl   $0x2,-0xc(%rbp)
+  4004eb:   c7 45 fc 04 00 00 00    movl   $0x4,-0x4(%rbp)
+  4004f2:   b8 00 00 00 00          mov    $0x0,%eax
+  4004f7:   5d                      pop    %rbp
+  4004f8:   c3                      retq
+  4004f9:   0f 1f 80 00 00 00 00    nopl   0x0(%rax)
+```
+
+---
+**64ŒªΩ˚÷π±‡“Î∆˜”≈ªØ±‡“Î÷∏¡Ó**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    int a = 0;
+    int b = 1;
+    int c = 2;
+
+    a = b << 2;
+
+    return 0;
+}
+```
+**∂‘”¶ª„±‡**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  4004dd:   c7 45 f8 01 00 00 00    movl   $0x1,-0x8(%rbp)
+  4004e4:   c7 45 f4 02 00 00 00    movl   $0x2,-0xc(%rbp)
+  4004eb:   8b 45 f8                mov    -0x8(%rbp),%eax
+  4004ee:   c1 e0 02                shl    $0x2,%eax
+  4004f1:   89 45 fc                mov    %eax,-0x4(%rbp)
+  4004f4:   b8 00 00 00 00          mov    $0x0,%eax
+  4004f9:   5d                      pop    %rbp
+  4004fa:   c3                      retq
+  4004fb:   0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+```
+
+---
+**64ŒªΩ˚÷π±‡“Î∆˜”≈ªØ±‡“Î÷∏¡Ó**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    int a = 0;
+    int b = 1;
+    int c = 2;
+
+    a = b >> 2;
+
+    return 0;
+}
+```
+**∂‘”¶ª„±‡**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  4004dd:   c7 45 f8 01 00 00 00    movl   $0x1,-0x8(%rbp)
+  4004e4:   c7 45 f4 02 00 00 00    movl   $0x2,-0xc(%rbp)
+  4004eb:   8b 45 f8                mov    -0x8(%rbp),%eax
+  4004ee:   c1 f8 02                sar    $0x2,%eax
+  4004f1:   89 45 fc                mov    %eax,-0x4(%rbp)
+  4004f4:   b8 00 00 00 00          mov    $0x0,%eax
+  4004f9:   5d                      pop    %rbp
+  4004fa:   c3                      retq
+  4004fb:   0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+```
+
+---
+**64ŒªΩ˚÷π±‡“Î∆˜”≈ªØ±‡“Î÷∏¡Ó**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    int a = 0;
+    int b = 1;
+    int c = 2;
+
+    a = b & c;
+
+    return 0;
+}
+```
+**∂‘”¶ª„±‡**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  4004dd:   c7 45 f8 01 00 00 00    movl   $0x1,-0x8(%rbp)
+  4004e4:   c7 45 f4 02 00 00 00    movl   $0x2,-0xc(%rbp)
+  4004eb:   8b 45 f8                mov    -0x8(%rbp),%eax
+  4004ee:   23 45 f4                and    -0xc(%rbp),%eax
+  4004f1:   89 45 fc                mov    %eax,-0x4(%rbp)
+  4004f4:   b8 00 00 00 00          mov    $0x0,%eax
+  4004f9:   5d                      pop    %rbp
+  4004fa:   c3                      retq
+  4004fb:   0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+```
+
+---
+**64ŒªΩ˚÷π±‡“Î∆˜”≈ªØ±‡“Î÷∏¡Ó**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    int a = 0;
+    int b = 1;
+    int c = 2;
+
+    a = b | c;
+
+    return 0;
+}
+```
+**∂‘”¶ª„±‡**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  4004dd:   c7 45 f8 01 00 00 00    movl   $0x1,-0x8(%rbp)
+  4004e4:   c7 45 f4 02 00 00 00    movl   $0x2,-0xc(%rbp)
+  4004eb:   8b 45 f8                mov    -0x8(%rbp),%eax
+  4004ee:   0b 45 f4                or     -0xc(%rbp),%eax
+  4004f1:   89 45 fc                mov    %eax,-0x4(%rbp)
+  4004f4:   b8 00 00 00 00          mov    $0x0,%eax
+  4004f9:   5d                      pop    %rbp
+  4004fa:   c3                      retq
+  4004fb:   0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+```
+
+---
+**64ŒªΩ˚÷π±‡“Î∆˜”≈ªØ±‡“Î÷∏¡Ó**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    int a = 0;
+    int b = 1;
+    int c = 2;
+
+    a = b ^ c;
+
+    return 0;
+}
+```
+**∂‘”¶ª„±‡**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  4004dd:   c7 45 f8 01 00 00 00    movl   $0x1,-0x8(%rbp)
+  4004e4:   c7 45 f4 02 00 00 00    movl   $0x2,-0xc(%rbp)
+  4004eb:   8b 45 f8                mov    -0x8(%rbp),%eax
+  4004ee:   33 45 f4                xor    -0xc(%rbp),%eax
+  4004f1:   89 45 fc                mov    %eax,-0x4(%rbp)
+  4004f4:   b8 00 00 00 00          mov    $0x0,%eax
+  4004f9:   5d                      pop    %rbp
+  4004fa:   c3                      retq
+  4004fb:   0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+```
+
+---
+**64ŒªΩ˚÷π±‡“Î∆˜”≈ªØ±‡“Î÷∏¡Ó**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    int a = 0;
+    int b = 1;
+    int c = 2;
+
+    a = b && c;
+
+    return 0;
+}
+```
+**∂‘”¶ª„±‡**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  4004dd:   c7 45 f8 01 00 00 00    movl   $0x1,-0x8(%rbp)
+  4004e4:   c7 45 f4 02 00 00 00    movl   $0x2,-0xc(%rbp)
+  4004eb:   83 7d f8 00             cmpl   $0x0,-0x8(%rbp)
+  4004ef:   74 0d                   je     4004fe <main+0x2c>
+  4004f1:   83 7d f4 00             cmpl   $0x0,-0xc(%rbp)
+  4004f5:   74 07                   je     4004fe <main+0x2c>
+  4004f7:   b8 01 00 00 00          mov    $0x1,%eax
+  4004fc:   eb 05                   jmp    400503 <main+0x31>
+  4004fe:   b8 00 00 00 00          mov    $0x0,%eax
+  400503:   89 45 fc                mov    %eax,-0x4(%rbp)
+  400506:   b8 00 00 00 00          mov    $0x0,%eax
+  40050b:   5d                      pop    %rbp
+  40050c:   c3                      retq
+  40050d:   0f 1f 00                nopl   (%rax)
+```
+
+---
+**64ŒªΩ˚÷π±‡“Î∆˜”≈ªØ±‡“Î÷∏¡Ó**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    int a = 0;
+    int b = 1;
+    int c = 2;
+
+    a = b || c;
+
+    return 0;
+}
+```
+**∂‘”¶ª„±‡**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  4004dd:   c7 45 f8 01 00 00 00    movl   $0x1,-0x8(%rbp)
+  4004e4:   c7 45 f4 02 00 00 00    movl   $0x2,-0xc(%rbp)
+  4004eb:   83 7d f8 00             cmpl   $0x0,-0x8(%rbp)
+  4004ef:   75 06                   jne    4004f7 <main+0x25>
+  4004f1:   83 7d f4 00             cmpl   $0x0,-0xc(%rbp)
+  4004f5:   74 07                   je     4004fe <main+0x2c>
+  4004f7:   b8 01 00 00 00          mov    $0x1,%eax
+  4004fc:   eb 05                   jmp    400503 <main+0x31>
+  4004fe:   b8 00 00 00 00          mov    $0x0,%eax
+  400503:   89 45 fc                mov    %eax,-0x4(%rbp)
+  400506:   b8 00 00 00 00          mov    $0x0,%eax
+  40050b:   5d                      pop    %rbp
+  40050c:   c3                      retq
+  40050d:   0f 1f 00                nopl   (%rax)
+```
+
+---
+**64ŒªΩ˚÷π±‡“Î∆˜”≈ªØ±‡“Î÷∏¡Ó**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    int a = 0;
+    int b = 1;
+    int c = 2;
+
+    a = b ? b : c;
+
+    return 0;
+}
+```
+**∂‘”¶ª„±‡**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  4004dd:   c7 45 f8 01 00 00 00    movl   $0x1,-0x8(%rbp)
+  4004e4:   c7 45 f4 02 00 00 00    movl   $0x2,-0xc(%rbp)
+  4004eb:   83 7d f8 00             cmpl   $0x0,-0x8(%rbp)
+  4004ef:   74 05                   je     4004f6 <main+0x24>
+  4004f1:   8b 45 f8                mov    -0x8(%rbp),%eax
+  4004f4:   eb 03                   jmp    4004f9 <main+0x27>
+  4004f6:   8b 45 f4                mov    -0xc(%rbp),%eax
+  4004f9:   89 45 fc                mov    %eax,-0x4(%rbp)
+  4004fc:   b8 00 00 00 00          mov    $0x0,%eax
+  400501:   5d                      pop    %rbp
+  400502:   c3                      retq
+  400503:   66 2e 0f 1f 84 00 00    nopw   %cs:0x0(%rax,%rax,1)
+  40050a:   00 00 00
+  40050d:   0f 1f 00                nopl   (%rax)
+```
+
+---
+**64ŒªΩ˚÷π±‡“Î∆˜”≈ªØ±‡“Î÷∏¡Ó**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    int a = 0;
+    int b = 1;
+    int c = 2;
+
+    a == b ? b : c;
+
+    return 0;
+}
+```
+**∂‘”¶ª„±‡**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  4004dd:   c7 45 f8 01 00 00 00    movl   $0x1,-0x8(%rbp)
+  4004e4:   c7 45 f4 02 00 00 00    movl   $0x2,-0xc(%rbp)
+  4004eb:   8b 45 fc                mov    -0x4(%rbp),%eax
+  4004ee:   3b 45 f8                cmp    -0x8(%rbp),%eax
+  4004f1:   b8 00 00 00 00          mov    $0x0,%eax
+  4004f6:   5d                      pop    %rbp
+  4004f7:   c3                      retq
+  4004f8:   0f 1f 84 00 00 00 00    nopl   0x0(%rax,%rax,1)
+  4004ff:   00
+```
+
+---
+**64ŒªΩ˚÷π±‡“Î∆˜”≈ªØ±‡“Î÷∏¡Ó**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    int a = 0;
+    int b = 1;
+    int c = 2;
+
+    a = (a == b ? b : c);
+
+    return 0;
+}
+```
+**∂‘”¶ª„±‡**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  4004dd:   c7 45 f8 01 00 00 00    movl   $0x1,-0x8(%rbp)
+  4004e4:   c7 45 f4 02 00 00 00    movl   $0x2,-0xc(%rbp)
+  4004eb:   8b 45 fc                mov    -0x4(%rbp),%eax
+  4004ee:   3b 45 f8                cmp    -0x8(%rbp),%eax
+  4004f1:   75 05                   jne    4004f8 <main+0x26>
+  4004f3:   8b 45 f8                mov    -0x8(%rbp),%eax
+  4004f6:   eb 03                   jmp    4004fb <main+0x29>
+  4004f8:   8b 45 f4                mov    -0xc(%rbp),%eax
+  4004fb:   89 45 fc                mov    %eax,-0x4(%rbp)
+  4004fe:   b8 00 00 00 00          mov    $0x0,%eax
+  400503:   5d                      pop    %rbp
+  400504:   c3                      retq
+  400505:   66 2e 0f 1f 84 00 00    nopw   %cs:0x0(%rax,%rax,1)
+  40050c:   00 00 00
+  40050f:   90                      nop
+```
+
+---
