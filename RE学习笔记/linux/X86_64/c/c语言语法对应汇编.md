@@ -72,8 +72,7 @@ int main() {
 
 ```
 **ª„±‡÷∏¡Ó—ßœ∞**
->xchg: Exchanges the contents of the destination (first) and source (second) operands. (XCHG (E)AX, (E)AX (encoded instruction byte is 90H) is an alias for NOP regardless of data size
-prefixes, including REX.W.)
+>xchg: Exchanges the contents of the destination (first) and source (second) operands. (XCHG (E)AX, (E)AX (encoded instruction byte is 90H) is an alias for NOP regardless of data size prefixes, including REX.W.)
 ---
 
 **c¥˙¬Î**
@@ -1200,6 +1199,299 @@ int main() {
   400504:   66 2e 0f 1f 84 00 00    nopw   %cs:0x0(%rax,%rax,1)
   40050b:   00 00 00
   40050e:   66 90                   xchg   %ax,%ax
+```
+
+---
+**64ŒªΩ˚÷π±‡“Î∆˜”≈ªØ±‡“Î÷∏¡Ó**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    int a = 100;
+    int b = 0;
+
+    switch (a) {
+    case 1:
+       b = 1;
+       break;
+    case 2:
+       b = 2;
+    case 100:
+       b = 3;
+       break;
+    default:
+       b = 4;
+    }
+
+    return 0;
+}
+```
+**∂‘”¶ª„±‡**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c7 45 fc 64 00 00 00    movl   $0x64,-0x4(%rbp)
+  4004dd:   c7 45 f8 00 00 00 00    movl   $0x0,-0x8(%rbp)
+  4004e4:   83 7d fc 64             cmpl   $0x64,-0x4(%rbp)
+  4004e8:   74 24                   je     40050e <main+0x3c>
+  4004ea:   83 7d fc 64             cmpl   $0x64,-0x4(%rbp)
+  4004ee:   7f 27                   jg     400517 <main+0x45>
+  4004f0:   83 7d fc 01             cmpl   $0x1,-0x4(%rbp)
+  4004f4:   74 08                   je     4004fe <main+0x2c>
+  4004f6:   83 7d fc 02             cmpl   $0x2,-0x4(%rbp)
+  4004fa:   74 0b                   je     400507 <main+0x35>
+  4004fc:   eb 19                   jmp    400517 <main+0x45>
+  4004fe:   c7 45 f8 01 00 00 00    movl   $0x1,-0x8(%rbp)
+  400505:   eb 17                   jmp    40051e <main+0x4c>
+  400507:   c7 45 f8 02 00 00 00    movl   $0x2,-0x8(%rbp)
+  40050e:   c7 45 f8 03 00 00 00    movl   $0x3,-0x8(%rbp)
+  400515:   eb 07                   jmp    40051e <main+0x4c>
+  400517:   c7 45 f8 04 00 00 00    movl   $0x4,-0x8(%rbp)
+  40051e:   b8 00 00 00 00          mov    $0x0,%eax
+  400523:   5d                      pop    %rbp
+  400524:   c3                      retq
+  400525:   66 2e 0f 1f 84 00 00    nopw   %cs:0x0(%rax,%rax,1)
+  40052c:   00 00 00
+  40052f:   90                      nop
+```
+
+---
+**64ŒªΩ˚÷π±‡“Î∆˜”≈ªØ±‡“Î÷∏¡Ó**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    int a = 0;
+    int b = 1;
+    int c = 2;
+
+    a = b + c;
+
+    return 0;
+}
+```
+**∂‘”¶ª„±‡**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  4004dd:   c7 45 f8 01 00 00 00    movl   $0x1,-0x8(%rbp)
+  4004e4:   c7 45 f4 02 00 00 00    movl   $0x2,-0xc(%rbp)
+  4004eb:   8b 55 f8                mov    -0x8(%rbp),%edx
+  4004ee:   8b 45 f4                mov    -0xc(%rbp),%eax
+  4004f1:   01 d0                   add    %edx,%eax
+  4004f3:   89 45 fc                mov    %eax,-0x4(%rbp)
+  4004f6:   b8 00 00 00 00          mov    $0x0,%eax
+  4004fb:   5d                      pop    %rbp
+  4004fc:   c3                      retq
+  4004fd:   0f 1f 00                nopl   (%rax)
+```
+
+---
+**64ŒªΩ˚÷π±‡“Î∆˜”≈ªØ±‡“Î÷∏¡Ó**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    int a = 0;
+    int b = -1;
+    int c = -2;
+
+    a = b + c;
+
+    return 0;
+}
+```
+**∂‘”¶ª„±‡**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  4004dd:   c7 45 f8 ff ff ff ff    movl   $0xffffffff,-0x8(%rbp)
+  4004e4:   c7 45 f4 fe ff ff ff    movl   $0xfffffffe,-0xc(%rbp)
+  4004eb:   8b 55 f8                mov    -0x8(%rbp),%edx
+  4004ee:   8b 45 f4                mov    -0xc(%rbp),%eax
+  4004f1:   01 d0                   add    %edx,%eax
+  4004f3:   89 45 fc                mov    %eax,-0x4(%rbp)
+  4004f6:   b8 00 00 00 00          mov    $0x0,%eax
+  4004fb:   5d                      pop    %rbp
+  4004fc:   c3                      retq
+  4004fd:   0f 1f 00                nopl   (%rax)
+```
+
+---
+**64ŒªΩ˚÷π±‡“Î∆˜”≈ªØ±‡“Î÷∏¡Ó**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    int a = 0;
+    int b = 1;
+    int c = 2;
+
+    a = b - c;
+
+    return 0;
+}
+```
+**∂‘”¶ª„±‡**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  4004dd:   c7 45 f8 01 00 00 00    movl   $0x1,-0x8(%rbp)
+  4004e4:   c7 45 f4 02 00 00 00    movl   $0x2,-0xc(%rbp)
+  4004eb:   8b 45 f8                mov    -0x8(%rbp),%eax
+  4004ee:   2b 45 f4                sub    -0xc(%rbp),%eax
+  4004f1:   89 45 fc                mov    %eax,-0x4(%rbp)
+  4004f4:   b8 00 00 00 00          mov    $0x0,%eax
+  4004f9:   5d                      pop    %rbp
+  4004fa:   c3                      retq
+  4004fb:   0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+```
+
+---
+**64ŒªΩ˚÷π±‡“Î∆˜”≈ªØ±‡“Î÷∏¡Ó**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    int a = 0;
+    int b = -1;
+    int c = -2;
+
+    a = b - c;
+
+    return 0;
+}
+```
+**∂‘”¶ª„±‡**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  4004dd:   c7 45 f8 ff ff ff ff    movl   $0xffffffff,-0x8(%rbp)
+  4004e4:   c7 45 f4 fe ff ff ff    movl   $0xfffffffe,-0xc(%rbp)
+  4004eb:   8b 45 f8                mov    -0x8(%rbp),%eax
+  4004ee:   2b 45 f4                sub    -0xc(%rbp),%eax
+  4004f1:   89 45 fc                mov    %eax,-0x4(%rbp)
+  4004f4:   b8 00 00 00 00          mov    $0x0,%eax
+  4004f9:   5d                      pop    %rbp
+  4004fa:   c3                      retq
+  4004fb:   0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+```
+
+---
+**64ŒªΩ˚÷π±‡“Î∆˜”≈ªØ±‡“Î÷∏¡Ó**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    int a = 0;
+    int b = 1;
+    int c = 2;
+
+    a = b * c;
+
+    return 0;
+}
+```
+**∂‘”¶ª„±‡**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  4004dd:   c7 45 f8 01 00 00 00    movl   $0x1,-0x8(%rbp)
+  4004e4:   c7 45 f4 02 00 00 00    movl   $0x2,-0xc(%rbp)
+  4004eb:   8b 45 f8                mov    -0x8(%rbp),%eax
+  4004ee:   0f af 45 f4             imul   -0xc(%rbp),%eax
+  4004f2:   89 45 fc                mov    %eax,-0x4(%rbp)
+  4004f5:   b8 00 00 00 00          mov    $0x0,%eax
+  4004fa:   5d                      pop    %rbp
+  4004fb:   c3                      retq
+  4004fc:   0f 1f 40 00             nopl   0x0(%rax)
+```
+
+---
+**64ŒªΩ˚÷π±‡“Î∆˜”≈ªØ±‡“Î÷∏¡Ó**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    int a = 0;
+    int b = 1;
+    int c = 2;
+
+    a = b / c;
+
+    return 0;
+}
+```
+**∂‘”¶ª„±‡**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  4004dd:   c7 45 f8 01 00 00 00    movl   $0x1,-0x8(%rbp)
+  4004e4:   c7 45 f4 02 00 00 00    movl   $0x2,-0xc(%rbp)
+  4004eb:   8b 45 f8                mov    -0x8(%rbp),%eax
+  4004ee:   99                      cltd
+  4004ef:   f7 7d f4                idivl  -0xc(%rbp)
+  4004f2:   89 45 fc                mov    %eax,-0x4(%rbp)
+  4004f5:   b8 00 00 00 00          mov    $0x0,%eax
+  4004fa:   5d                      pop    %rbp
+  4004fb:   c3                      retq
+  4004fc:   0f 1f 40 00             nopl   0x0(%rax)
+```
+**ª„±‡÷∏¡Ó—ßœ∞**
+> cltd converts the signed long in EAX to a signed double long in EDX:EAX by extending the most-significant bit (sign bit) of EAX into all bits of EDX.
+
+---
+**64ŒªΩ˚÷π±‡“Î∆˜”≈ªØ±‡“Î÷∏¡Ó**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    int a = 0;
+    int b = 1;
+    int c = 2;
+
+    a = b % c;
+
+    return 0;
+}
+```
+**∂‘”¶ª„±‡**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  4004dd:   c7 45 f8 01 00 00 00    movl   $0x1,-0x8(%rbp)
+  4004e4:   c7 45 f4 02 00 00 00    movl   $0x2,-0xc(%rbp)
+  4004eb:   8b 45 f8                mov    -0x8(%rbp),%eax
+  4004ee:   99                      cltd
+  4004ef:   f7 7d f4                idivl  -0xc(%rbp)
+  4004f2:   89 55 fc                mov    %edx,-0x4(%rbp)
+  4004f5:   b8 00 00 00 00          mov    $0x0,%eax
+  4004fa:   5d                      pop    %rbp
+  4004fb:   c3                      retq
+  4004fc:   0f 1f 40 00             nopl   0x0(%rax)
 ```
 
 ---
