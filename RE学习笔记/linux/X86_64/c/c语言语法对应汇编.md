@@ -2252,7 +2252,7 @@ int main() {
   4004ff:   c3                      retq
 ```
 **64位函数调用规约**
-![calling convention](D:\文档\技术资源\读书笔记\ReadingNote\RE学习笔记\linux\X86_64\c\calling_convention.png)
+![calling convention](D:\文档\技术资源\读书笔记\ReadingNote\RE学习笔记\linux\X86_64\c\2.png)
 [calling convention wiki](https://en.wikipedia.org/wiki/X86_calling_conventions)
 
 
