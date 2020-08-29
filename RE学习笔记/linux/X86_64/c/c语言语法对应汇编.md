@@ -1877,3 +1877,518 @@ int main() {
 ```
 
 ---
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    int a = 0;
+    int b = 1;
+    int c = 2;
+
+    a = (0, c);
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  4004dd:   c7 45 f8 01 00 00 00    movl   $0x1,-0x8(%rbp)
+  4004e4:   c7 45 f4 02 00 00 00    movl   $0x2,-0xc(%rbp)
+  4004eb:   8b 45 f4                mov    -0xc(%rbp),%eax
+  4004ee:   89 45 fc                mov    %eax,-0x4(%rbp)
+  4004f1:   b8 00 00 00 00          mov    $0x0,%eax
+  4004f6:   5d                      pop    %rbp
+  4004f7:   c3                      retq
+  4004f8:   0f 1f 84 00 00 00 00    nopl   0x0(%rax,%rax,1)
+  4004ff:   00
+```
+
+---
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    int a = 0;
+    int b = 1;
+    int c = 2;
+
+    a = 0, c;
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  4004dd:   c7 45 f8 01 00 00 00    movl   $0x1,-0x8(%rbp)
+  4004e4:   c7 45 f4 02 00 00 00    movl   $0x2,-0xc(%rbp)
+  4004eb:   c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  4004f2:   b8 00 00 00 00          mov    $0x0,%eax
+  4004f7:   5d                      pop    %rbp
+  4004f8:   c3                      retq
+  4004f9:   0f 1f 80 00 00 00 00    nopl   0x0(%rax)
+```
+
+---
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    int a = 0;
+    int b = 1;
+    int c = 2;
+
+    a, c;
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  4004dd:   c7 45 f8 01 00 00 00    movl   $0x1,-0x8(%rbp)
+  4004e4:   c7 45 f4 02 00 00 00    movl   $0x2,-0xc(%rbp)
+  4004eb:   b8 00 00 00 00          mov    $0x0,%eax
+  4004f0:   5d                      pop    %rbp
+  4004f1:   c3                      retq
+  4004f2:   66 2e 0f 1f 84 00 00    nopw   %cs:0x0(%rax,%rax,1)
+  4004f9:   00 00 00
+  4004fc:   0f 1f 40 00             nopl   0x0(%rax)
+```
+
+---
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    int a = 0;
+    int b = 1;
+    int c = 2;
+
+    a += c;
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  4004dd:   c7 45 f8 01 00 00 00    movl   $0x1,-0x8(%rbp)
+  4004e4:   c7 45 f4 02 00 00 00    movl   $0x2,-0xc(%rbp)
+  4004eb:   8b 45 f4                mov    -0xc(%rbp),%eax
+  4004ee:   01 45 fc                add    %eax,-0x4(%rbp)
+  4004f1:   b8 00 00 00 00          mov    $0x0,%eax
+  4004f6:   5d                      pop    %rbp
+  4004f7:   c3                      retq
+  4004f8:   0f 1f 84 00 00 00 00    nopl   0x0(%rax,%rax,1)
+  4004ff:   00
+```
+
+---
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    int a = 0;
+    int b = 1;
+    int c = 2;
+
+    a -= c;
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  4004dd:   c7 45 f8 01 00 00 00    movl   $0x1,-0x8(%rbp)
+  4004e4:   c7 45 f4 02 00 00 00    movl   $0x2,-0xc(%rbp)
+  4004eb:   8b 45 f4                mov    -0xc(%rbp),%eax
+  4004ee:   29 45 fc                sub    %eax,-0x4(%rbp)
+  4004f1:   b8 00 00 00 00          mov    $0x0,%eax
+  4004f6:   5d                      pop    %rbp
+  4004f7:   c3                      retq
+  4004f8:   0f 1f 84 00 00 00 00    nopl   0x0(%rax,%rax,1)
+  4004ff:   00
+```
+
+---
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    int a = 0;
+    int b = 1;
+    int c = 2;
+
+    a *= c;
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  4004dd:   c7 45 f8 01 00 00 00    movl   $0x1,-0x8(%rbp)
+  4004e4:   c7 45 f4 02 00 00 00    movl   $0x2,-0xc(%rbp)
+  4004eb:   8b 45 fc                mov    -0x4(%rbp),%eax
+  4004ee:   0f af 45 f4             imul   -0xc(%rbp),%eax
+  4004f2:   89 45 fc                mov    %eax,-0x4(%rbp)
+  4004f5:   b8 00 00 00 00          mov    $0x0,%eax
+  4004fa:   5d                      pop    %rbp
+  4004fb:   c3                      retq
+  4004fc:   0f 1f 40 00             nopl   0x0(%rax)
+```
+
+---
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    int a = 0;
+    int b = 1;
+    int c = 2;
+
+    a /= c;
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  4004dd:   c7 45 f8 01 00 00 00    movl   $0x1,-0x8(%rbp)
+  4004e4:   c7 45 f4 02 00 00 00    movl   $0x2,-0xc(%rbp)
+  4004eb:   8b 45 fc                mov    -0x4(%rbp),%eax
+  4004ee:   99                      cltd
+  4004ef:   f7 7d f4                idivl  -0xc(%rbp)
+  4004f2:   89 45 fc                mov    %eax,-0x4(%rbp)
+  4004f5:   b8 00 00 00 00          mov    $0x0,%eax
+  4004fa:   5d                      pop    %rbp
+  4004fb:   c3                      retq
+  4004fc:   0f 1f 40 00             nopl   0x0(%rax)
+```
+
+---
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int main() {
+    int a = 0;
+    int b = 1;
+    int c = 2;
+
+    a %= c;
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <main>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+  4004dd:   c7 45 f8 01 00 00 00    movl   $0x1,-0x8(%rbp)
+  4004e4:   c7 45 f4 02 00 00 00    movl   $0x2,-0xc(%rbp)
+  4004eb:   8b 45 fc                mov    -0x4(%rbp),%eax
+  4004ee:   99                      cltd
+  4004ef:   f7 7d f4                idivl  -0xc(%rbp)
+  4004f2:   89 55 fc                mov    %edx,-0x4(%rbp)
+  4004f5:   b8 00 00 00 00          mov    $0x0,%eax
+  4004fa:   5d                      pop    %rbp
+  4004fb:   c3                      retq
+  4004fc:   0f 1f 40 00             nopl   0x0(%rax)
+```
+
+---
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int func() {
+    return 0;
+}
+
+int main() {
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <func>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   b8 00 00 00 00          mov    $0x0,%eax
+  4004db:   5d                      pop    %rbp
+  4004dc:   c3                      retq
+
+00000000004004dd <main>:
+  4004dd:   55                      push   %rbp
+  4004de:   48 89 e5                mov    %rsp,%rbp
+  4004e1:   b8 00 00 00 00          mov    $0x0,%eax
+  4004e6:   5d                      pop    %rbp
+  4004e7:   c3                      retq
+  4004e8:   0f 1f 84 00 00 00 00    nopl   0x0(%rax,%rax,1)
+  4004ef:   00
+```
+
+---
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int func() {
+    return 0;
+}
+
+int main() {
+    func(); 
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <func>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   b8 00 00 00 00          mov    $0x0,%eax
+  4004db:   5d                      pop    %rbp
+  4004dc:   c3                      retq
+
+00000000004004dd <main>:
+  4004dd:   55                      push   %rbp
+  4004de:   48 89 e5                mov    %rsp,%rbp
+  4004e1:   b8 00 00 00 00          mov    $0x0,%eax
+  4004e6:   e8 e7 ff ff ff          callq  4004d2 <func>
+  4004eb:   b8 00 00 00 00          mov    $0x0,%eax
+  4004f0:   5d                      pop    %rbp
+  4004f1:   c3                      retq
+  4004f2:   66 2e 0f 1f 84 00 00    nopw   %cs:0x0(%rax,%rax,1)
+  4004f9:   00 00 00
+  4004fc:   0f 1f 40 00             nopl   0x0(%rax)
+```
+
+---
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int func(int a) {
+    return 0;
+}
+
+int main() {
+    int a = 1;
+
+    func(a); 
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <func>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   89 7d fc                mov    %edi,-0x4(%rbp)
+  4004d9:   b8 00 00 00 00          mov    $0x0,%eax
+  4004de:   5d                      pop    %rbp
+  4004df:   c3                      retq
+
+00000000004004e0 <main>:
+  4004e0:   55                      push   %rbp
+  4004e1:   48 89 e5                mov    %rsp,%rbp
+  4004e4:   48 83 ec 10             sub    $0x10,%rsp
+  4004e8:   c7 45 fc 01 00 00 00    movl   $0x1,-0x4(%rbp)
+  4004ef:   8b 45 fc                mov    -0x4(%rbp),%eax
+  4004f2:   89 c7                   mov    %eax,%edi
+  4004f4:   e8 d9 ff ff ff          callq  4004d2 <func>
+  4004f9:   b8 00 00 00 00          mov    $0x0,%eax
+  4004fe:   c9                      leaveq
+  4004ff:   c3                      retq
+```
+**64位函数调用规约**
+![calling convention](D:\文档\技术资源\读书笔记\ReadingNote\RE学习笔记\linux\X86_64\c\calling_convention.png)
+[calling convention wiki](https://en.wikipedia.org/wiki/X86_calling_conventions)
+
+
+---
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int func(int a, int b, int c) {
+    return 0;
+}
+
+int main() {
+    int a = 1;
+    int b = 2;
+    int c = 3;
+
+    func(a, b, c); 
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <func>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   89 7d fc                mov    %edi,-0x4(%rbp)
+  4004d9:   89 75 f8                mov    %esi,-0x8(%rbp)
+  4004dc:   89 55 f4                mov    %edx,-0xc(%rbp)
+  4004df:   b8 00 00 00 00          mov    $0x0,%eax
+  4004e4:   5d                      pop    %rbp
+  4004e5:   c3                      retq
+
+00000000004004e6 <main>:
+  4004e6:   55                      push   %rbp
+  4004e7:   48 89 e5                mov    %rsp,%rbp
+  4004ea:   48 83 ec 10             sub    $0x10,%rsp
+  4004ee:   c7 45 fc 01 00 00 00    movl   $0x1,-0x4(%rbp)
+  4004f5:   c7 45 f8 02 00 00 00    movl   $0x2,-0x8(%rbp)
+  4004fc:   c7 45 f4 03 00 00 00    movl   $0x3,-0xc(%rbp)
+  400503:   8b 55 f4                mov    -0xc(%rbp),%edx
+  400506:   8b 4d f8                mov    -0x8(%rbp),%ecx
+  400509:   8b 45 fc                mov    -0x4(%rbp),%eax
+  40050c:   89 ce                   mov    %ecx,%esi
+  40050e:   89 c7                   mov    %eax,%edi
+  400510:   e8 bd ff ff ff          callq  4004d2 <func>
+  400515:   b8 00 00 00 00          mov    $0x0,%eax
+  40051a:   c9                      leaveq
+  40051b:   c3                      retq
+  40051c:   0f 1f 40 00             nopl   0x0(%rax)
+```
+
+---
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int func(int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k) {
+  
+    return 0;
+}
+
+int main() {
+    int a = 1;
+    int b = 2;
+    int c = 3;
+    int d = 4;
+    int e = 5;
+    int f = 6;
+    int g = 7;
+    int h = 8;
+    int i = 9;
+    int j = 10;
+    int k = 11;
+
+    func(a, b, c, d, e, f, g, h, i, j, k);
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <func>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   89 7d fc                mov    %edi,-0x4(%rbp)
+  4004d9:   89 75 f8                mov    %esi,-0x8(%rbp)
+  4004dc:   89 55 f4                mov    %edx,-0xc(%rbp)
+  4004df:   89 4d f0                mov    %ecx,-0x10(%rbp)
+  4004e2:   44 89 45 ec             mov    %r8d,-0x14(%rbp)
+  4004e6:   44 89 4d e8             mov    %r9d,-0x18(%rbp)
+  4004ea:   b8 00 00 00 00          mov    $0x0,%eax
+  4004ef:   5d                      pop    %rbp
+  4004f0:   c3                      retq
+
+00000000004004f1 <main>:
+  4004f1:   55                      push   %rbp
+  4004f2:   48 89 e5                mov    %rsp,%rbp
+  4004f5:   48 83 ec 30             sub    $0x30,%rsp
+  4004f9:   c7 45 fc 01 00 00 00    movl   $0x1,-0x4(%rbp)
+  400500:   c7 45 f8 02 00 00 00    movl   $0x2,-0x8(%rbp)
+  400507:   c7 45 f4 03 00 00 00    movl   $0x3,-0xc(%rbp)
+  40050e:   c7 45 f0 04 00 00 00    movl   $0x4,-0x10(%rbp)
+  400515:   c7 45 ec 05 00 00 00    movl   $0x5,-0x14(%rbp)
+  40051c:   c7 45 e8 06 00 00 00    movl   $0x6,-0x18(%rbp)
+  400523:   c7 45 e4 07 00 00 00    movl   $0x7,-0x1c(%rbp)
+  40052a:   c7 45 e0 08 00 00 00    movl   $0x8,-0x20(%rbp)
+  400531:   c7 45 dc 09 00 00 00    movl   $0x9,-0x24(%rbp)
+  400538:   c7 45 d8 0a 00 00 00    movl   $0xa,-0x28(%rbp)
+  40053f:   c7 45 d4 0b 00 00 00    movl   $0xb,-0x2c(%rbp)
+  400546:   44 8b 4d e8             mov    -0x18(%rbp),%r9d
+  40054a:   44 8b 45 ec             mov    -0x14(%rbp),%r8d
+  40054e:   8b 4d f0                mov    -0x10(%rbp),%ecx
+  400551:   8b 55 f4                mov    -0xc(%rbp),%edx
+  400554:   8b 75 f8                mov    -0x8(%rbp),%esi
+  400557:   8b 45 fc                mov    -0x4(%rbp),%eax
+  40055a:   8b 7d d4                mov    -0x2c(%rbp),%edi
+  40055d:   57                      push   %rdi
+  40055e:   8b 7d d8                mov    -0x28(%rbp),%edi
+  400561:   57                      push   %rdi
+  400562:   8b 7d dc                mov    -0x24(%rbp),%edi
+  400565:   57                      push   %rdi
+  400566:   8b 7d e0                mov    -0x20(%rbp),%edi
+  400569:   57                      push   %rdi
+  40056a:   8b 7d e4                mov    -0x1c(%rbp),%edi
+  40056d:   57                      push   %rdi
+  40056e:   89 c7                   mov    %eax,%edi
+  400570:   e8 5d ff ff ff          callq  4004d2 <func>
+  400575:   48 83 c4 28             add    $0x28,%rsp
+  400579:   b8 00 00 00 00          mov    $0x0,%eax
+  40057e:   c9                      leaveq
+  40057f:   c3                      retq
+```
+
+---
+
