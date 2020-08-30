@@ -2603,3 +2603,242 @@ int main() {
 ```
 
 ---
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+#include <stdio.h>
+  
+void func(int a) {
+    printf("%d\n", a);
+}
+
+int main() {
+    int a = 1;
+
+    func(a);
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+0000000000400512 <func>:
+  400512:   55                      push   %rbp
+  400513:   48 89 e5                mov    %rsp,%rbp
+  400516:   48 83 ec 10             sub    $0x10,%rsp
+  40051a:   89 7d fc                mov    %edi,-0x4(%rbp)
+  40051d:   8b 45 fc                mov    -0x4(%rbp),%eax
+  400520:   89 c6                   mov    %eax,%esi
+  400522:   bf e4 05 40 00          mov    $0x4005e4,%edi
+  400527:   b8 00 00 00 00          mov    $0x0,%eax
+  40052c:   e8 df fe ff ff          callq  400410 <printf@plt>
+  400531:   90                      nop
+  400532:   c9                      leaveq
+  400533:   c3                      retq
+
+0000000000400534 <main>:
+  400534:   55                      push   %rbp
+  400535:   48 89 e5                mov    %rsp,%rbp
+  400538:   48 83 ec 10             sub    $0x10,%rsp
+  40053c:   c7 45 fc 01 00 00 00    movl   $0x1,-0x4(%rbp)
+  400543:   8b 45 fc                mov    -0x4(%rbp),%eax
+  400546:   89 c7                   mov    %eax,%edi
+  400548:   e8 c5 ff ff ff          callq  400512 <func>
+  40054d:   b8 00 00 00 00          mov    $0x0,%eax
+  400552:   c9                      leaveq
+  400553:   c3                      retq
+  400554:   66 2e 0f 1f 84 00 00    nopw   %cs:0x0(%rax,%rax,1)
+  40055b:   00 00 00
+  40055e:   66 90                   xchg   %ax,%ax
+
+Contents of section .rodata:
+ 4005e0 01000200 25640a00                    ....%d..
+```
+
+---
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+#include <stdio.h>
+  
+void func(char *name) {
+    printf("%s\n", name);
+}
+
+int main() {
+    char *name = "jiangziqi";
+
+    func(name);
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+0000000000400512 <func>:
+  400512:   55                      push   %rbp
+  400513:   48 89 e5                mov    %rsp,%rbp
+  400516:   48 83 ec 10             sub    $0x10,%rsp
+  40051a:   48 89 7d f8             mov    %rdi,-0x8(%rbp)
+  40051e:   48 8b 45 f8             mov    -0x8(%rbp),%rax
+  400522:   48 89 c7                mov    %rax,%rdi
+  400525:   e8 e6 fe ff ff          callq  400410 <puts@plt>
+  40052a:   90                      nop
+  40052b:   c9                      leaveq
+  40052c:   c3                      retq
+
+000000000040052d <main>:
+  40052d:   55                      push   %rbp
+  40052e:   48 89 e5                mov    %rsp,%rbp
+  400531:   48 83 ec 10             sub    $0x10,%rsp
+  400535:   48 c7 45 f8 d4 05 40    movq   $0x4005d4,-0x8(%rbp)
+  40053c:   00
+  40053d:   48 8b 45 f8             mov    -0x8(%rbp),%rax
+  400541:   48 89 c7                mov    %rax,%rdi
+  400544:   e8 c9 ff ff ff          callq  400512 <func>
+  400549:   b8 00 00 00 00          mov    $0x0,%eax
+  40054e:   c9                      leaveq
+  40054f:   c3                      retq
+
+Contents of section .rodata:
+  4005d0 01000200 6a69616e 677a6971 6900      ....jiangziqi.
+```
+
+---
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+#include <stdio.h>
+  
+int main(void) {
+    FILE *fp = NULL;
+    fp = fopen("/tmp/iii", "rw");
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+0000000000400512 <main>:
+  400512:   55                      push   %rbp
+  400513:   48 89 e5                mov    %rsp,%rbp
+  400516:   48 83 ec 10             sub    $0x10,%rsp
+  40051a:   48 c7 45 f8 00 00 00    movq   $0x0,-0x8(%rbp)
+  400521:   00
+  400522:   be c4 05 40 00          mov    $0x4005c4,%esi
+  400527:   bf c7 05 40 00          mov    $0x4005c7,%edi
+  40052c:   e8 ff fe ff ff          callq  400430 <fopen@plt>
+  400531:   48 89 45 f8             mov    %rax,-0x8(%rbp)
+  400535:   b8 00 00 00 00          mov    $0x0,%eax
+  40053a:   c9                      leaveq
+  40053b:   c3                      retq
+  40053c:   0f 1f 40 00             nopl   0x0(%rax)
+
+Contents of section .rodata:
+  4005c0 01000200 7277002f 746d702f 69696900  ....rw./tmp/iii.
+```
+
+---
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+#include <stdio.h>
+#include <string.h>
+
+int main(void) {
+    FILE *fp = NULL;
+    char buff[4096] = { '\0' };
+
+    fp = fopen("/dev/random", "r");
+
+    while ((fread(buff, 1, sizeof(buff) - 1, fp)) < (sizeof(buff) - 1)) {
+        printf("%s\n", buff);
+        memset(buff, 0, sizeof(buff));
+    }
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004005f2 <main>:
+  4005f2:   55                      push   %rbp
+  4005f3:   48 89 e5                mov    %rsp,%rbp
+  4005f6:   48 81 ec 10 10 00 00    sub    $0x1010,%rsp
+  4005fd:   48 c7 45 f8 00 00 00    movq   $0x0,-0x8(%rbp)
+  400604:   00
+  400605:   48 c7 85 f0 ef ff ff    movq   $0x0,-0x1010(%rbp)
+  40060c:   00 00 00 00
+  400610:   48 c7 85 f8 ef ff ff    movq   $0x0,-0x1008(%rbp)
+  400617:   00 00 00 00
+  40061b:   48 8d 95 00 f0 ff ff    lea    -0x1000(%rbp),%rdx
+  400622:   b8 00 00 00 00          mov    $0x0,%eax
+  400627:   b9 fe 01 00 00          mov    $0x1fe,%ecx
+  40062c:   48 89 d7                mov    %rdx,%rdi
+  40062f:   f3 48 ab                rep stos %rax,%es:(%rdi)
+  400632:   be 24 07 40 00          mov    $0x400724,%esi
+  400637:   bf 26 07 40 00          mov    $0x400726,%edi
+  40063c:   e8 cf fe ff ff          callq  400510 <fopen@plt>
+  400641:   48 89 45 f8             mov    %rax,-0x8(%rbp)
+  400645:   eb 28                   jmp    40066f <main+0x7d>
+  400647:   48 8d 85 f0 ef ff ff    lea    -0x1010(%rbp),%rax
+  40064e:   48 89 c7                mov    %rax,%rdi
+  400651:   e8 6a fe ff ff          callq  4004c0 <puts@plt>
+  400656:   48 8d 85 f0 ef ff ff    lea    -0x1010(%rbp),%rax
+  40065d:   ba 00 10 00 00          mov    $0x1000,%edx
+  400662:   be 00 00 00 00          mov    $0x0,%esi
+  400667:   48 89 c7                mov    %rax,%rdi
+  40066a:   e8 71 fe ff ff          callq  4004e0 <memset@plt>
+  40066f:   48 8b 55 f8             mov    -0x8(%rbp),%rdx
+  400673:   48 8d 85 f0 ef ff ff    lea    -0x1010(%rbp),%rax
+  40067a:   48 89 d1                mov    %rdx,%rcx
+  40067d:   ba ff 0f 00 00          mov    $0xfff,%edx
+  400682:   be 01 00 00 00          mov    $0x1,%esi
+  400687:   48 89 c7                mov    %rax,%rdi
+  40068a:   e8 41 fe ff ff          callq  4004d0 <fread@plt>
+  40068f:   48 3d fe 0f 00 00       cmp    $0xffe,%rax
+  400695:   76 b0                   jbe    400647 <main+0x55>
+  400697:   b8 00 00 00 00          mov    $0x0,%eax
+  40069c:   c9                      leaveq
+  40069d:   c3                      retq
+  40069e:   66 90                   xchg   %ax,%ax
+
+Contents of section .rodata:
+  400720 01000200 72002f64 65762f72 616e646f  ....r./dev/rando
+  400730 6d00                                 m.
+
+0000000000400510 <fopen@plt>:
+  400510:   ff 25 2a 0b 20 00       jmpq   *0x200b2a(%rip)        # 601040 <fopen@GLIBC_2.2.5>
+  400516:   68 05 00 00 00          pushq  $0x5
+  40051b:   e9 90 ff ff ff          jmpq   4004b0 <.plt>
+
+00000000004004c0 <puts@plt>:
+  4004c0:   ff 25 52 0b 20 00       jmpq   *0x200b52(%rip)        # 601018 <puts@GLIBC_2.2.5>
+  4004c6:   68 00 00 00 00          pushq  $0x0
+  4004cb:   e9 e0 ff ff ff          jmpq   4004b0 <.plt>
+
+00000000004004e0 <memset@plt>:
+  4004e0:   ff 25 42 0b 20 00       jmpq   *0x200b42(%rip)        # 601028 <memset@GLIBC_2.2.5>
+  4004e6:   68 02 00 00 00          pushq  $0x2
+  4004eb:   e9 c0 ff ff ff          jmpq   4004b0 <.plt>
+
+00000000004004d0 <fread@plt>:
+  4004d0:   ff 25 4a 0b 20 00       jmpq   *0x200b4a(%rip)        # 601020 <fread@GLIBC_2.2.5>
+  4004d6:   68 01 00 00 00          pushq  $0x1
+  4004db:   e9 d0 ff ff ff          jmpq   4004b0 <.plt>
+```
+**汇编指令学习**
+> mov    $0x0,%eax
+> mov    $0x1fe,%ecx
+> mov    %rdx,%rdi
+> rep stos %rax,%es:(%rdi)
+> rep指令的目的是重复其上面的指令ECX的值是重复的次数。 
+> STOS指令的作用是将eax中的值拷贝到ES:EDI指向的地址。
