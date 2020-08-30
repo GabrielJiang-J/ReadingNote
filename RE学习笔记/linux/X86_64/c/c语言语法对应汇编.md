@@ -2499,3 +2499,107 @@ int main() {
 ![函数调用规约](D:\文档\技术资源\读书笔记\ReadingNote\RE学习笔记\linux\X86_64\c\3.png)
 
 ---
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int func(int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k) {
+    return func(a, b, c, d, e, f, g, h, i, j, k);
+}
+
+int main() {
+    int a = 1;
+    int b = 2;
+    int c = 3;
+    int d = 4;
+    int e = 5;
+    int f = 6;
+    int g = 7;
+    int h = 8;
+    int i = 9;
+    int j = 10;
+    int k = 11;
+
+    func(a, b, c, d, e, f, g, h, i, j, k);
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <func>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   48 83 ec 20             sub    $0x20,%rsp
+  4004da:   89 7d fc                mov    %edi,-0x4(%rbp)
+  4004dd:   89 75 f8                mov    %esi,-0x8(%rbp)
+  4004e0:   89 55 f4                mov    %edx,-0xc(%rbp)
+  4004e3:   89 4d f0                mov    %ecx,-0x10(%rbp)
+  4004e6:   44 89 45 ec             mov    %r8d,-0x14(%rbp)
+  4004ea:   44 89 4d e8             mov    %r9d,-0x18(%rbp)
+  4004ee:   44 8b 4d e8             mov    -0x18(%rbp),%r9d
+  4004f2:   44 8b 45 ec             mov    -0x14(%rbp),%r8d
+  4004f6:   8b 4d f0                mov    -0x10(%rbp),%ecx
+  4004f9:   8b 55 f4                mov    -0xc(%rbp),%edx
+  4004fc:   8b 75 f8                mov    -0x8(%rbp),%esi
+  4004ff:   8b 45 fc                mov    -0x4(%rbp),%eax
+  400502:   48 83 ec 08             sub    $0x8,%rsp
+  400506:   8b 7d 30                mov    0x30(%rbp),%edi
+  400509:   57                      push   %rdi
+  40050a:   8b 7d 28                mov    0x28(%rbp),%edi
+  40050d:   57                      push   %rdi
+  40050e:   8b 7d 20                mov    0x20(%rbp),%edi
+  400511:   57                      push   %rdi
+  400512:   8b 7d 18                mov    0x18(%rbp),%edi
+  400515:   57                      push   %rdi
+  400516:   8b 7d 10                mov    0x10(%rbp),%edi
+  400519:   57                      push   %rdi
+  40051a:   89 c7                   mov    %eax,%edi
+  40051c:   e8 b1 ff ff ff          callq  4004d2 <func>
+  400521:   48 83 c4 30             add    $0x30,%rsp
+  400525:   c9                      leaveq
+  400526:   c3                      retq
+
+0000000000400527 <main>:
+  400527:   55                      push   %rbp
+  400528:   48 89 e5                mov    %rsp,%rbp
+  40052b:   48 83 ec 30             sub    $0x30,%rsp
+  40052f:   c7 45 fc 01 00 00 00    movl   $0x1,-0x4(%rbp)
+  400536:   c7 45 f8 02 00 00 00    movl   $0x2,-0x8(%rbp)
+  40053d:   c7 45 f4 03 00 00 00    movl   $0x3,-0xc(%rbp)
+  400544:   c7 45 f0 04 00 00 00    movl   $0x4,-0x10(%rbp)
+  40054b:   c7 45 ec 05 00 00 00    movl   $0x5,-0x14(%rbp)
+  400552:   c7 45 e8 06 00 00 00    movl   $0x6,-0x18(%rbp)
+  400559:   c7 45 e4 07 00 00 00    movl   $0x7,-0x1c(%rbp)
+  400560:   c7 45 e0 08 00 00 00    movl   $0x8,-0x20(%rbp)
+  400567:   c7 45 dc 09 00 00 00    movl   $0x9,-0x24(%rbp)
+  40056e:   c7 45 d8 0a 00 00 00    movl   $0xa,-0x28(%rbp)
+  400575:   c7 45 d4 0b 00 00 00    movl   $0xb,-0x2c(%rbp)
+  40057c:   44 8b 4d e8             mov    -0x18(%rbp),%r9d
+  400580:   44 8b 45 ec             mov    -0x14(%rbp),%r8d
+  400584:   8b 4d f0                mov    -0x10(%rbp),%ecx
+  400587:   8b 55 f4                mov    -0xc(%rbp),%edx
+  40058a:   8b 75 f8                mov    -0x8(%rbp),%esi
+  40058d:   8b 45 fc                mov    -0x4(%rbp),%eax
+  400590:   48 83 ec 08             sub    $0x8,%rsp
+  400594:   8b 7d d4                mov    -0x2c(%rbp),%edi
+  400597:   57                      push   %rdi
+  400598:   8b 7d d8                mov    -0x28(%rbp),%edi
+  40059b:   57                      push   %rdi
+  40059c:   8b 7d dc                mov    -0x24(%rbp),%edi
+  40059f:   57                      push   %rdi
+  4005a0:   8b 7d e0                mov    -0x20(%rbp),%edi
+  4005a3:   57                      push   %rdi
+  4005a4:   8b 7d e4                mov    -0x1c(%rbp),%edi
+  4005a7:   57                      push   %rdi
+  4005a8:   89 c7                   mov    %eax,%edi
+  4005aa:   e8 23 ff ff ff          callq  4004d2 <func>
+  4005af:   48 83 c4 30             add    $0x30,%rsp
+  4005b3:   b8 00 00 00 00          mov    $0x0,%eax
+  4005b8:   c9                      leaveq
+  4005b9:   c3                      retq
+  4005ba:   66 0f 1f 44 00 00       nopw   0x0(%rax,%rax,1)
+```
+
+---
