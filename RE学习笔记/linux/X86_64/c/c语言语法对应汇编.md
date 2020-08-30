@@ -2391,4 +2391,111 @@ int main() {
 ```
 
 ---
+**64位禁止编译器优化编译指令**
+```
+gcc 1.c -o 1 -O0
+```
+```c
+int func(int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k) {
+    a++;
+    b++;
+    c++;
+    d++;
+    e++;
+    f++;
+    g++;
+    h++;
+    i++;
+    j++;
+    k++;
+  
+    return 0;
+}
 
+int main() {
+    int a = 1;
+    int b = 2;
+    int c = 3;
+    int d = 4;
+    int e = 5;
+    int f = 6;
+    int g = 7;
+    int h = 8;
+    int i = 9;
+    int j = 10;
+    int k = 11;
+
+    func(a, b, c, d, e, f, g, h, i, j, k);
+
+    return 0;
+}
+```
+**对应汇编**
+```asm
+00000000004004d2 <func>:
+  4004d2:   55                      push   %rbp
+  4004d3:   48 89 e5                mov    %rsp,%rbp
+  4004d6:   89 7d fc                mov    %edi,-0x4(%rbp)
+  4004d9:   89 75 f8                mov    %esi,-0x8(%rbp)
+  4004dc:   89 55 f4                mov    %edx,-0xc(%rbp)
+  4004df:   89 4d f0                mov    %ecx,-0x10(%rbp)
+  4004e2:   44 89 45 ec             mov    %r8d,-0x14(%rbp)
+  4004e6:   44 89 4d e8             mov    %r9d,-0x18(%rbp)
+  4004ea:   83 45 fc 01             addl   $0x1,-0x4(%rbp)
+  4004ee:   83 45 f8 01             addl   $0x1,-0x8(%rbp)
+  4004f2:   83 45 f4 01             addl   $0x1,-0xc(%rbp)
+  4004f6:   83 45 f0 01             addl   $0x1,-0x10(%rbp)
+  4004fa:   83 45 ec 01             addl   $0x1,-0x14(%rbp)
+  4004fe:   83 45 e8 01             addl   $0x1,-0x18(%rbp)
+  400502:   83 45 10 01             addl   $0x1,0x10(%rbp)
+  400506:   83 45 18 01             addl   $0x1,0x18(%rbp)
+  40050a:   83 45 20 01             addl   $0x1,0x20(%rbp)
+  40050e:   83 45 28 01             addl   $0x1,0x28(%rbp)
+  400512:   83 45 30 01             addl   $0x1,0x30(%rbp)
+  400516:   b8 00 00 00 00          mov    $0x0,%eax
+  40051b:   5d                      pop    %rbp
+  40051c:   c3                      retq
+
+000000000040051d <main>:
+  40051d:   55                      push   %rbp
+  40051e:   48 89 e5                mov    %rsp,%rbp
+  400521:   48 83 ec 30             sub    $0x30,%rsp
+  400525:   c7 45 fc 01 00 00 00    movl   $0x1,-0x4(%rbp)
+  40052c:   c7 45 f8 02 00 00 00    movl   $0x2,-0x8(%rbp)
+  400533:   c7 45 f4 03 00 00 00    movl   $0x3,-0xc(%rbp)
+  40053a:   c7 45 f0 04 00 00 00    movl   $0x4,-0x10(%rbp)
+  400541:   c7 45 ec 05 00 00 00    movl   $0x5,-0x14(%rbp)
+  400548:   c7 45 e8 06 00 00 00    movl   $0x6,-0x18(%rbp)
+  40054f:   c7 45 e4 07 00 00 00    movl   $0x7,-0x1c(%rbp)
+  400556:   c7 45 e0 08 00 00 00    movl   $0x8,-0x20(%rbp)
+  40055d:   c7 45 dc 09 00 00 00    movl   $0x9,-0x24(%rbp)
+  400564:   c7 45 d8 0a 00 00 00    movl   $0xa,-0x28(%rbp)
+  40056b:   c7 45 d4 0b 00 00 00    movl   $0xb,-0x2c(%rbp)
+  400572:   44 8b 4d e8             mov    -0x18(%rbp),%r9d
+  400576:   44 8b 45 ec             mov    -0x14(%rbp),%r8d
+  40057a:   8b 4d f0                mov    -0x10(%rbp),%ecx
+  40057d:   8b 55 f4                mov    -0xc(%rbp),%edx
+  400580:   8b 75 f8                mov    -0x8(%rbp),%esi
+  400583:   8b 45 fc                mov    -0x4(%rbp),%eax
+  400586:   8b 7d d4                mov    -0x2c(%rbp),%edi
+  400589:   57                      push   %rdi
+  40058a:   8b 7d d8                mov    -0x28(%rbp),%edi
+  40058d:   57                      push   %rdi
+  40058e:   8b 7d dc                mov    -0x24(%rbp),%edi
+  400591:   57                      push   %rdi
+  400592:   8b 7d e0                mov    -0x20(%rbp),%edi
+  400595:   57                      push   %rdi
+  400596:   8b 7d e4                mov    -0x1c(%rbp),%edi
+  400599:   57                      push   %rdi
+  40059a:   89 c7                   mov    %eax,%edi
+  40059c:   e8 31 ff ff ff          callq  4004d2 <func>
+  4005a1:   48 83 c4 28             add    $0x28,%rsp
+  4005a5:   b8 00 00 00 00          mov    $0x0,%eax
+  4005aa:   c9                      leaveq
+  4005ab:   c3                      retq
+  4005ac:   0f 1f 40 00             nopl   0x0(%rax)
+```
+**演示图片**
+![函数调用规约](D:\文档\技术资源\读书笔记\ReadingNote\RE学习笔记\linux\X86_64\c\3.png)
+
+---
