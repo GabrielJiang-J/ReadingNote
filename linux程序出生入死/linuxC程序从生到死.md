@@ -13,6 +13,73 @@
 ### 3. gcc预处理：cpp
 ### 4. gcc编译：cc1
 ### 5. gcc汇编：as
+#### elf文件格式
+    汇编之后会产生relocatable file，relocatable file是c程序生命周期中第一个以elf格式存在的文件，后面还有executable file和shared object file都是以elf格式存在，并且在elf定义中，都属于object file，因此在这里记录elf文件格式。
+    elf截至当前为止，分为两部分。一个是32位标准定义，一个是64位补充定义。
+> [elf 32位标准定义](https://github.com/GabrielJiang-J/study_information/blob/master/%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%88%86%E6%9E%90/linux/elf.pdf)
+> [elf 64位补充定义](https://github.com/GabrielJiang-J/study_information/blob/master/%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%88%86%E6%9E%90/linux/elf-64-gen.pdf)
+
+    鉴于目前64位已比较普遍，所以在记录时，直接合并32位和64位定义中的相关数据结构定义。
+
+---
+    
+   object file会参与到程序的链接和执行过程中，因此elf文件划分出链接视图和执行视图，两种视图来体现链接和执行过程中的不同要素。
+![Object File Format](D:\文档\技术资源\读书笔记\ReadingNote\linux程序出生入死\1.png) 
+> **ELF header**：描述了整个elf的结构和组织。
+> **Sections**：包含所有“链接视图”所需的信息。
+> **Segments**：包含所有“执行视图”所需的信息。
+> **program header table**：定义如何创建process image。
+> **section header table**：包含所有section的全部信息。
+
+![ELF-64 Data Types](D:\文档\技术资源\读书笔记\ReadingNote\linux程序出生入死\2.png)
+    
+![ELF-64 Header](D:\文档\技术资源\读书笔记\ReadingNote\linux程序出生入死\3.png)
+
+![ELF Identification, e_ident](D:\文档\技术资源\读书笔记\ReadingNote\linux程序出生入死\4.png)
+
+![Object File Classes, e_ident[EI_CLASS]](D:\文档\技术资源\读书笔记\ReadingNote\linux程序出生入死\5.png)
+
+![Data Encodings, e_ident[EI_DATA]](D:\文档\技术资源\读书笔记\ReadingNote\linux程序出生入死\6.png)
+
+![Operating System and ABI Identifiers, e_ident[EI_OSABI]](D:\文档\技术资源\读书笔记\ReadingNote\linux程序出生入死\7.png)
+
+![Object File Types, e_type](D:\文档\技术资源\读书笔记\ReadingNote\linux程序出生入死\8.png)
+
+![e_machine](D:\文档\技术资源\读书笔记\ReadingNote\linux程序出生入死\9.png)
+
+实例：
+```shell
+[root@localhost tmp]# readelf -h /bin/ls
+ELF Header:
+  Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00 
+  Class:                             ELF64
+  Data:                              2's complement, little endian
+  Version:                           1 (current)
+  OS/ABI:                            UNIX - System V
+  ABI Version:                       0
+  Type:                              EXEC (Executable file)
+  Machine:                           Advanced Micro Devices X86-64
+  Version:                           0x1
+  Entry point address:               0x404324
+  Start of program headers:          64 (bytes into file)
+  Start of section headers:          115688 (bytes into file)
+  Flags:                             0x0
+  Size of this header:               64 (bytes)
+  Size of program headers:           56 (bytes)
+  Number of program headers:         9
+  Size of section headers:           64 (bytes)
+  Number of section headers:         30
+  Section header string table index: 29
+```
+```shell
+[root@localhost tmp]# xxd -s 0x0 -l 0x40 /bin/ls
+0000000: 7f45 4c46 0201 0100 0000 0000 0000 0000  .ELF............
+0000010: 0200 3e00 0100 0000 2443 4000 0000 0000  ..>.....$C@.....
+0000020: 4000 0000 0000 0000 e8c3 0100 0000 0000  @...............
+0000030: 0000 0000 4000 3800 0900 4000 1e00 1d00  ....@.8...@.....
+```
+
+    
 ### 6. gcc链接：collect2:ld//lib64/ld-linux-x86-64.so.2
 #### 动态链接
 实验：
