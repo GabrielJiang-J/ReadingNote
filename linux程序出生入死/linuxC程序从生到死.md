@@ -13,6 +13,7 @@
 ### 3. gcc预处理：cpp
 ### 4. gcc编译：cc1
 ### 5. gcc汇编：as
+
 #### elf文件格式
     汇编之后会产生relocatable file，relocatable file是c程序生命周期中第一个以elf格式存在的文件，后面还有executable file和shared object file都是以elf格式存在，并且在elf定义中，都属于object file，因此在这里记录elf文件格式。
     elf截至当前为止，分为两部分。一个是32位标准定义，一个是64位补充定义。在标准中没有定义的部分，属于实现相关的部分，可以参考linux系统下的/usr/include/elf.h中的定义。
@@ -82,7 +83,7 @@ ELF Header:
 0000030: 0000 0000 4000 3800 0900 4000 1e00 1d00  ....@.8...@.....
 ```
 
-#### Section
+### Section
 
 ![ELF-64 Section Header](D:\文档\技术资源\读书笔记\ReadingNote\linux程序出生入死\10.png)
 
@@ -296,7 +297,7 @@ Key to Flags:
 001cb58: 0100 0000 0000 0000 0000 0000 0000 0000  ................
 ```
 
-##### Symble Table 
+#### Symble Table 
     符号表包含了所有的在文件中需要定位和重定位的符号定义和引用的信息。
 
 ![ELF-64 Symbol Table Entry](D:\文档\技术资源\读书笔记\ReadingNote\linux程序出生入死\17.png)
@@ -493,7 +494,7 @@ Symbol table '.symtab' contains 60 entries:
 0001610: e003 4000 0000 0000 0000 0000 0000 0000  ..@.............
 ```
 
-##### Relocations
+#### Relocations
 ![ELF-64 Relocation Entries](D:\文档\技术资源\读书笔记\ReadingNote\linux程序出生入死\20.png)
 
 
@@ -555,7 +556,114 @@ Relocation section '.rela.plt' at offset 0x398 contains 3 entries:
 00003b8: 0700 0000 0200 0000 0000 0000 0000 0000  ................
 00003c8: 2810 6000 0000 0000 0700 0000 0300 0000  (.`.............
 00003d8: 0000 0000 0000 0000                      ........
+```
 
+### Program header table
+![ELF-64 Program Header Table Entry](D:\文档\技术资源\读书笔记\ReadingNote\linux程序出生入死\21.png)
+
+![Segment Types, p_type](D:\文档\技术资源\读书笔记\ReadingNote\linux程序出生入死\22.png)
+
+![Segment Types, p_type (Continued)](D:\文档\技术资源\读书笔记\ReadingNote\linux程序出生入死\23.png)
+
+![Segment Attributes, p_flags](D:\文档\技术资源\读书笔记\ReadingNote\linux程序出生入死\24.png)
+
+```shell
+[root@localhost tmp]# readelf -h HelloWorld
+ELF Header:
+  Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00 
+  Class:                             ELF64
+  Data:                              2's complement, little endian
+  Version:                           1 (current)
+  OS/ABI:                            UNIX - System V
+  ABI Version:                       0
+  Type:                              EXEC (Executable file)
+  Machine:                           Advanced Micro Devices X86-64
+  Version:                           0x1
+  Entry point address:               0x400440
+  Start of program headers:          64 (bytes into file)
+  Start of section headers:          6368 (bytes into file)
+  Flags:                             0x0
+  Size of this header:               64 (bytes)
+  Size of program headers:           56 (bytes)
+  Number of program headers:         9
+  Size of section headers:           64 (bytes)
+  Number of section headers:         29
+  Section header string table index: 28
+
+[root@localhost tmp]# readelf -l HelloWorld
+
+Elf file type is EXEC (Executable file)
+Entry point 0x400440
+There are 9 program headers, starting at offset 64
+
+Program Headers:
+  Type           Offset             VirtAddr           PhysAddr
+                 FileSiz            MemSiz              Flags  Align
+  PHDR           0x0000000000000040 0x0000000000400040 0x0000000000400040
+                 0x00000000000001f8 0x00000000000001f8  R E    8
+  INTERP         0x0000000000000238 0x0000000000400238 0x0000000000400238
+                 0x000000000000001c 0x000000000000001c  R      1
+      [Requesting program interpreter: /lib64/ld-linux-x86-64.so.2]
+  LOAD           0x0000000000000000 0x0000000000400000 0x0000000000400000
+                 0x00000000000006ec 0x00000000000006ec  R E    200000
+  LOAD           0x0000000000000e18 0x0000000000600e18 0x0000000000600e18
+                 0x0000000000000228 0x0000000000000230  RW     200000
+  DYNAMIC        0x0000000000000e28 0x0000000000600e28 0x0000000000600e28
+                 0x00000000000001d0 0x00000000000001d0  RW     8
+  NOTE           0x0000000000000254 0x0000000000400254 0x0000000000400254
+                 0x0000000000000044 0x0000000000000044  R      4
+  GNU_EH_FRAME   0x00000000000005c4 0x00000000004005c4 0x00000000004005c4
+                 0x0000000000000034 0x0000000000000034  R      4
+  GNU_STACK      0x0000000000000000 0x0000000000000000 0x0000000000000000
+                 0x0000000000000000 0x0000000000000000  RW     10
+  GNU_RELRO      0x0000000000000e18 0x0000000000600e18 0x0000000000600e18
+                 0x00000000000001e8 0x00000000000001e8  R      1
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     
+   01     .interp 
+   02     .interp .note.ABI-tag .note.gnu.build-id .gnu.hash .dynsym .dynstr .gnu.version .gnu.version_r .rela.dyn .rela.plt .init .plt .text .fini .rodata .eh_frame_hdr .eh_frame 
+   03     .init_array .fini_array .dynamic .got .got.plt .data .bss 
+   04     .dynamic 
+   05     .note.ABI-tag .note.gnu.build-id 
+   06     .eh_frame_hdr 
+   07     
+   08     .init_array .fini_array .dynamic .got 
+
+[root@localhost tmp]# xxd -s 64 -l 504 HelloWorld
+0000040: 0600 0000 0500 0000 4000 0000 0000 0000  ........@.......
+0000050: 4000 4000 0000 0000 4000 4000 0000 0000  @.@.....@.@.....
+0000060: f801 0000 0000 0000 f801 0000 0000 0000  ................
+0000070: 0800 0000 0000 0000 0300 0000 0400 0000  ................
+0000080: 3802 0000 0000 0000 3802 4000 0000 0000  8.......8.@.....
+0000090: 3802 4000 0000 0000 1c00 0000 0000 0000  8.@.............
+00000a0: 1c00 0000 0000 0000 0100 0000 0000 0000  ................
+00000b0: 0100 0000 0500 0000 0000 0000 0000 0000  ................
+00000c0: 0000 4000 0000 0000 0000 4000 0000 0000  ..@.......@.....
+00000d0: ec06 0000 0000 0000 ec06 0000 0000 0000  ................
+00000e0: 0000 2000 0000 0000 0100 0000 0600 0000  .. .............
+00000f0: 180e 0000 0000 0000 180e 6000 0000 0000  ..........`.....
+0000100: 180e 6000 0000 0000 2802 0000 0000 0000  ..`.....(.......
+0000110: 3002 0000 0000 0000 0000 2000 0000 0000  0......... .....
+0000120: 0200 0000 0600 0000 280e 0000 0000 0000  ........(.......
+0000130: 280e 6000 0000 0000 280e 6000 0000 0000  (.`.....(.`.....
+0000140: d001 0000 0000 0000 d001 0000 0000 0000  ................
+0000150: 0800 0000 0000 0000 0400 0000 0400 0000  ................
+0000160: 5402 0000 0000 0000 5402 4000 0000 0000  T.......T.@.....
+0000170: 5402 4000 0000 0000 4400 0000 0000 0000  T.@.....D.......
+0000180: 4400 0000 0000 0000 0400 0000 0000 0000  D...............
+0000190: 50e5 7464 0400 0000 c405 0000 0000 0000  P.td............
+00001a0: c405 4000 0000 0000 c405 4000 0000 0000  ..@.......@.....
+00001b0: 3400 0000 0000 0000 3400 0000 0000 0000  4.......4.......
+00001c0: 0400 0000 0000 0000 51e5 7464 0600 0000  ........Q.td....
+00001d0: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+00001e0: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+00001f0: 0000 0000 0000 0000 1000 0000 0000 0000  ................
+0000200: 52e5 7464 0400 0000 180e 0000 0000 0000  R.td............
+0000210: 180e 6000 0000 0000 180e 6000 0000 0000  ..`.......`.....
+0000220: e801 0000 0000 0000 e801 0000 0000 0000  ................
+0000230: 0100 0000 0000 0000                      ........
 ```
     
 ---
