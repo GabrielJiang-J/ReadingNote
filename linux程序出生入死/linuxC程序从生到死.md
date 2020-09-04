@@ -493,6 +493,70 @@ Symbol table '.symtab' contains 60 entries:
 0001610: e003 4000 0000 0000 0000 0000 0000 0000  ..@.............
 ```
 
+##### Relocations
+![ELF-64 Relocation Entries](D:\文档\技术资源\读书笔记\ReadingNote\linux程序出生入死\20.png)
+
+
+```c
+#define ELF64_R_SYM(i)((i) >> 32)
+#define ELF64_R_TYPE(i)((i) & 0xffffffffL)
+#define ELF64_R_INFO(s, t)(((s) << 32) + ((t) & 0xffffffffL))
+```
+
+
+```shell
+[root@localhost tmp]# gcc -c HelloWorld.c -o HelloWorld.o
+[root@localhost tmp]# readelf -S HelloWorld.o
+
+  [ 2] .rela.text        RELA             0000000000000000  000001d0
+       0000000000000030  0000000000000018   I      10     1     8
+  [ 9] .rela.eh_frame    RELA             0000000000000000  00000200
+       0000000000000018  0000000000000018   I      10     8     8
+
+
+[root@localhost tmp]# readelf -r HelloWorld.o
+
+Relocation section '.rela.text' at offset 0x1d0 contains 2 entries:
+  Offset          Info           Type           Sym. Value    Sym. Name + Addend
+000000000005  00050000000a R_X86_64_32       0000000000000000 .rodata + 0
+00000000000a  000a00000002 R_X86_64_PC32     0000000000000000 puts - 4
+
+Relocation section '.rela.eh_frame' at offset 0x200 contains 1 entries:
+  Offset          Info           Type           Sym. Value    Sym. Name + Addend
+000000000020  000200000002 R_X86_64_PC32     0000000000000000 .text + 0
+
+[root@localhost tmp]# xxd -s 0x1d0 -l 0x30 HelloWorld.o
+00001d0: 0500 0000 0000 0000 0a00 0000 0500 0000  ................
+00001e0: 0000 0000 0000 0000 0a00 0000 0000 0000  ................
+00001f0: 0200 0000 0a00 0000 fcff ffff ffff ffff  ................
+
+[root@localhost tmp]# readelf -S HelloWorld
+
+  [ 9] .rela.dyn         RELA             0000000000400380  00000380
+       0000000000000018  0000000000000018   A       5     0     8
+  [10] .rela.plt         RELA             0000000000400398  00000398
+       0000000000000048  0000000000000018  AI       5    22     8
+
+[root@localhost tmp]# readelf -r HelloWorld
+
+Relocation section '.rela.dyn' at offset 0x380 contains 1 entries:
+  Offset          Info           Type           Sym. Value    Sym. Name + Addend
+000000600ff8  000300000006 R_X86_64_GLOB_DAT 0000000000000000 __gmon_start__ + 0
+
+Relocation section '.rela.plt' at offset 0x398 contains 3 entries:
+  Offset          Info           Type           Sym. Value    Sym. Name + Addend
+000000601018  000100000007 R_X86_64_JUMP_SLO 0000000000000000 puts@GLIBC_2.2.5 + 0
+000000601020  000200000007 R_X86_64_JUMP_SLO 0000000000000000 __libc_start_main@GLIBC_2.2.5 + 0
+000000601028  000300000007 R_X86_64_JUMP_SLO 0000000000000000 __gmon_start__ + 0
+
+[root@localhost tmp]# xxd -s 0x398 -l 0x48 HelloWorld
+0000398: 1810 6000 0000 0000 0700 0000 0100 0000  ..`.............
+00003a8: 0000 0000 0000 0000 2010 6000 0000 0000  ........ .`.....
+00003b8: 0700 0000 0200 0000 0000 0000 0000 0000  ................
+00003c8: 2810 6000 0000 0000 0700 0000 0300 0000  (.`.............
+00003d8: 0000 0000 0000 0000                      ........
+
+```
     
 ---
 ### 6. gcc链接：collect2:ld//lib64/ld-linux-x86-64.so.2
